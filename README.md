@@ -79,18 +79,22 @@ The **evidence swap** re-shows each model only the 3 snippets it picked, under n
 ## Run it yourself
 
 ```bash
-pip install httpx numpy pandas scipy matplotlib
+git clone https://github.com/venky-22/tell-me-what-i-want-to-hear
+cd tell-me-what-i-want-to-hear
+pip install -r requirements.txt
 
-# any OpenAI-compatible endpoint
-export LLM_API_KEY=...            # or put LLM_API_KEY / LLM_BASE_URL in a .env file
-export LLM_BASE_URL=https://...
+# 1) Reproduce every number and figure in the paper from the saved model outputs (no API key needed)
+python src/analyze.py          # main results    -> results/*.csv, figs/*.png
+python src/sensitivity.py      # robustness checks (date-leak exclusion, repetition loops, thinking on/off)
 
+# 2) Re-run the experiments yourself (needs an OpenAI-compatible API key)
+cp /path/to/your/api_keys.env .env     # a file with LLM_API_KEY=... and LLM_BASE_URL=...
+#   or: export LLM_API_KEY=...  LLM_BASE_URL=https://...
 python src/fetch_manifold.py                   # pull markets from the Manifold API
 python src/gen_snippets.py --model <model>     # write the 8-snippet evidence pools (blind to outcomes)
 python src/check_snippets.py                   # balance and leak checks
 python src/run_experiment.py --models <m1> <m2> --conds all,stakes_yes,stakes_no,stakes2_yes,stakes2_no
 python src/run_swap.py --models <m1> <m2>      # evidence-swap experiment
-python src/analyze.py                          # every table in results/ and every figure in figs/
 ```
 
 To test the whole pipeline with no API key, use `--models mock-biased mock-fair`. The analysis recovers the planted bias in `mock-biased` and finds none in `mock-fair`. `run_all.sh` runs the full study end to end.
@@ -108,6 +112,7 @@ src/
   run_experiment.py     all framings, the fixes, prompts
   run_swap.py           evidence-swap experiment
   analyze.py            statistics, tables and figures
+  sensitivity.py        robustness checks reported in the paper
   fig_design.py         Figure 1
 results/
   runs.jsonl, swap.jsonl, runs_reasoning.jsonl   every raw model response
