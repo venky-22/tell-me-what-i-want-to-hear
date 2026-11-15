@@ -1,0 +1,15 @@
+.env
+.DS_Store
+__pycache__/
+# API response cache (large; reruns re-create it)
+results/cache.jsonl
+# intermediate files re-derivable from results/runs.jsonl and results/swap.jsonl
+results/runs_excl.jsonl
+results/runs_nodeg.jsonl
+results/swap_excl.jsonl
+results/runs_think_cmp.jsonl
+results/stage_*.log
+results/pipeline.log
+# paper-formatting helpers
+src/build_docx.py
+src/to_pdf.sh
